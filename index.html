@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Study Assistant - Gita Anisa</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Marked.js CDN untuk Render Markdown AI ke HTML Rapi -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <style>
+    /* Styling khusus hasil render balasan AI */
+    .ai-response p {
+      margin-bottom: 0.75rem;
+      line-height: 1.6;
+    }
+    .ai-response p:last-child {
+      margin-bottom: 0;
+    }
+    .ai-response strong {
+      color: #c084fc; /* Warna ungu terang untuk teks tebal */
+      font-weight: 700;
+    }
+    .ai-response ul, .ai-response ol {
+      margin-left: 1.25rem;
+      margin-bottom: 0.75rem;
+      list-style-type: disc;
+    }
+    .ai-response li {
+      margin-bottom: 0.25rem;
+    }
+    .ai-response code {
+      background-color: #0f172a;
+      color: #38bdf8;
+      padding: 0.15rem 0.4rem;
+      border-radius: 0.375rem;
+      font-family: monospace;
+      font-size: 0.875em;
+      border: 1px solid #1e293b;
+    }
+    .ai-response pre {
+      background-color: #0b0f19;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      overflow-x: auto;
+      margin-top: 0.5rem;
+      margin-bottom: 0.75rem;
+      border: 1px solid #1e293b;
+    }
+    .ai-response pre code {
+      background: none;
+      padding: 0;
+      color: #e2e8f0;
+      border: none;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4 sm:p-6">
+
+  <!-- Card Utama AI Assistant -->
+  <div class="w-full max-w-2xl bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+    
+    <!-- Decorative Glow Behind Card -->
+    <div class="absolute -top-20 -right-20 w-60 h-60 bg-purple-600/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-20 -left-20 w-60 h-60 bg-cyan-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+    <!-- Header Section -->
+    <div class="text-center mb-6 relative z-10">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-semibold mb-3">
+        <span>🤖</span> Powered by Llama 3 & Flask
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center justify-center gap-2">
+        <span>📚</span> AI Study Assistant
+      </h1>
+      <p class="text-slate-400 text-xs sm:text-sm mt-2">
+        Tanyakan apa saja tentang pelajaranmu. AI siap membantu 24/7.
+      </p>
+    </div>
+
+    <!-- Chat Box / Response Container -->
+    <div class="mb-6">
+      <div id="chatResponse" class="hidden min-h-[120px] p-5 rounded-2xl bg-slate-950/70 border border-slate-800 text-slate-200 text-sm sm:text-base ai-response transition-all duration-300">
+        <!-- Jawaban AI akan dimasukkan secara rapi di sini -->
+      </div>
+    </div>
+
+    <!-- Form Input Chat -->
+    <form id="chatForm" class="relative z-10 flex flex-col gap-3">
+      <div class="relative">
+        <textarea 
+          id="userInput" 
+          rows="3" 
+          placeholder="Ketik pertanyaanmu di sini... (Contoh: Apa itu REST API?)" 
+          class="w-full p-4 rounded-2xl bg-slate-950/80 border border-slate-800 text-slate-100 placeholder-slate-500 text-sm sm:text-base focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all resize-none"
+          required></textarea>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <span class="text-xs text-slate-500 italic hidden sm:inline">💡 Tips: Tanya konsep programming, kuis, atau tugas.</span>
+        
+        <button 
+          type="submit" 
+          id="submitBtn"
+          class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-sm transition-all shadow-lg shadow-purple-600/25 flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50">
+          <span>Kirim</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+          </svg>
+        </button>
+      </div>
+    </form>
+
+  </div>
+
+  <!-- JavaScript Logika Chat -->
+  <script>
+    const chatForm = document.getElementById('chatForm');
+    const userInput = document.getElementById('userInput');
+    const chatResponse = document.getElementById('chatResponse');
+    const submitBtn = document.getElementById('submitBtn');
+
+    chatForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const message = userInput.value.trim();
+      if (!message) return;
+
+      // Tampilkan indikator loading & disable tombol
+      chatResponse.classList.remove('hidden');
+      chatResponse.innerHTML = `<div class="flex items-center gap-2 text-slate-400 italic">
+        <svg class="animate-spin h-4 w-4 text-purple-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>Sedang berpikir...</span>
+      </div>`;
+      
+      submitBtn.disabled = true;
+
+      try {
+        const response = await fetch('http://127.0.0.1:5001/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message: message })
+        });
+
+        const data = await response.json();
+
+        if (data.reply) {
+          // GOL UTAMA: Menggunakan marked.parse() agar jawaban ter-render menjadi HTML rapi!
+          chatResponse.innerHTML = marked.parse(data.reply);
+        } else {
+          chatResponse.innerHTML = `<p class="text-red-400">Gagal mendapatkan balasan dari AI.</p>`;
+        }
+
+      } catch (error) {
+        console.error('Error:', error);
+        chatResponse.innerHTML = `<p class="text-red-400">Gagal terhubung ke server Flask (${error.message}). Pastikan app.py sudah dijalankan.</p>`;
+      } finally {
+        submitBtn.disabled = false;
+        userInput.value = '';
+      }
+    });
+  </script>
+
+</body>
+</html>
