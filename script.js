@@ -3,7 +3,7 @@ const userInput = document.getElementById('userInput');
 const placeholder = document.getElementById('placeholder');
 const answerContent = document.getElementById('answerContent');
 
-const API_URL = 'http://127.0.0.1:5001/chat';
+const API_URL = fetch("/chat", { ... })
 
 sendBtn.addEventListener('click', sendMessage);
 userInput.addEventListener('keypress', (e) => {
