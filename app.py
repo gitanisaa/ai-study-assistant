@@ -33,7 +33,7 @@ def chat():
                     "content": user_message
                 }
             ],
-            model="llama-3.3-70b-versatile"
+            model="llama3-8b-8192"
         )
 
         reply = chat_completion.choices[0].message.content
