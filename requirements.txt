@@ -2,4 +2,4 @@ Flask
 flask-cors
 requests
 python-dotenv
-gunicorn
+groq
