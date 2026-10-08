@@ -15,20 +15,26 @@ def home():
 @app.route('/chat', methods=['POST'])
 def chat():
     try:
-        data = request.get_json()
-        # Mengambil riwayat pesan dari frontend
+        data = request.get_json() or {}
+        
+        # Mendukung pengiriman format tunggal 'message' maupun riwayat 'messages'
         incoming_messages = data.get('messages', [])
+        single_message = data.get('message', '')
+
+        # Jika frontend mengirim pesan tunggal, ubah ke format daftar
+        if not incoming_messages and single_message:
+            incoming_messages = [{"role": "user", "content": single_message}]
 
         if not incoming_messages:
             return jsonify({'error': 'Pesan tidak boleh kosong'}), 400
 
-        # Prompt dasar untuk karakter AI
+        # Instruksi dasar untuk karakter AI
         system_instruction = [{
             "role": "system",
             "content": "Kamu adalah AI Study Assistant yang ramah dan membantu siswa belajar."
         }]
 
-        # Gabungkan instruksi awal dengan riwayat chat
+        # Gabungkan instruksi awal dengan pesan dari pengguna
         full_conversation = system_instruction + incoming_messages
 
         chat_completion = client.chat.completions.create(
