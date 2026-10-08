@@ -1,9 +1,9 @@
 import os
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 from groq import Groq
 
-app = Flask(__name__, static_folder='.', template_folder='.')
+app = Flask(__name__)
 CORS(app)
 
 # Inisialisasi Groq Client
@@ -11,7 +11,7 @@ client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return send_file('index.html')
 
 @app.route('/chat', methods=['POST'])
 def chat():
@@ -42,6 +42,5 @@ def chat():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# Baris ini penting untuk Vercel Serverless
 if __name__ == '__main__':
     app.run(debug=True)
