@@ -14,13 +14,39 @@
             box-sizing: border-box;
         }
 
+        html,
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100%;
         }
 
-        /* Scrollbar */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+        }
+
+        button,
+        textarea {
+            font-family: inherit;
+        }
+
+        /* ===============================
+           SCROLLBAR
+        =============================== */
+
+        .chat-scroll {
+            scrollbar-width: thin;
+            scrollbar-color: #374151 transparent;
+        }
+
         .chat-scroll::-webkit-scrollbar {
             width: 6px;
+        }
+
+        .chat-scroll::-webkit-scrollbar-track {
+            background: transparent;
         }
 
         .chat-scroll::-webkit-scrollbar-thumb {
@@ -28,10 +54,14 @@
             border-radius: 10px;
         }
 
-        /* AI Orb */
+        /* ===============================
+           AI ORB
+        =============================== */
+
         .ai-orb {
             width: 100px;
             height: 100px;
+            flex-shrink: 0;
             border-radius: 50%;
             background:
                 radial-gradient(
@@ -74,9 +104,13 @@
             filter: blur(5px);
         }
 
-        /* Sidebar */
+        /* ===============================
+           SIDEBAR
+        =============================== */
+
         .sidebar {
             width: 62px;
+            min-width: 62px;
             transition: width 0.25s ease;
         }
 
@@ -89,6 +123,7 @@
             justify-content: center;
             color: #64748b;
             transition: all 0.2s ease;
+            flex-shrink: 0;
         }
 
         .sidebar-button:hover {
@@ -102,8 +137,44 @@
             box-shadow: 0 6px 18px rgba(124, 58, 237, 0.25);
         }
 
-        /* Feature Cards */
+        /* ===============================
+           MAIN CONTENT
+        =============================== */
+
+        .main-content {
+            width: calc(100% - 62px);
+            min-width: 0;
+        }
+
+        /* ===============================
+           WELCOME
+        =============================== */
+
+        #welcome-section {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .welcome-inner {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .welcome-title {
+            line-height: 1.15;
+        }
+
+        /* ===============================
+           FEATURE CARDS
+        =============================== */
+
+        .feature-grid {
+            width: 100%;
+        }
+
         .feature-card {
+            min-width: 0;
             background: rgba(30, 30, 42, 0.55);
             border: 1px solid rgba(42, 42, 53, 0.9);
             border-radius: 14px;
@@ -119,8 +190,17 @@
             transform: translateY(-2px);
         }
 
-        /* Input */
+        .feature-card p,
+        .feature-card h3 {
+            overflow-wrap: anywhere;
+        }
+
+        /* ===============================
+           INPUT
+        =============================== */
+
         .main-input {
+            width: 100%;
             background: rgba(15, 15, 22, 0.85);
             border: 1px solid #2a2a35;
             transition: all 0.2s ease;
@@ -131,19 +211,100 @@
             box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.15);
         }
 
-        /* Chat state */
+        .main-input textarea {
+            display: block;
+            width: 100%;
+            min-width: 0;
+            max-width: 100%;
+            line-height: 1.5;
+        }
+
+        /* ===============================
+           CHAT
+        =============================== */
+
         #chat-section {
             display: none;
+            min-height: 100vh;
         }
 
-        #welcome-section {
-            display: flex;
+        #chat-box {
+            min-width: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
-        /* Mobile */
+        #chat-box > div {
+            min-width: 0;
+            max-width: 100%;
+        }
+
+        #chat-box > div > div:last-child {
+            min-width: 0;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        /* Markdown */
+        #chat-box ul,
+        #chat-box ol {
+            padding-left: 1.25rem;
+            margin: 0.5rem 0;
+        }
+
+        #chat-box p {
+            margin: 0.35rem 0;
+        }
+
+        #chat-box p:first-child {
+            margin-top: 0;
+        }
+
+        #chat-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        #chat-box pre {
+            max-width: 100%;
+            overflow-x: auto;
+            white-space: pre;
+            margin: 0.75rem 0;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            background: rgba(15, 23, 42, 0.9);
+        }
+
+        #chat-box code {
+            overflow-wrap: anywhere;
+        }
+
+        /* ===============================
+           TABLET
+        =============================== */
+
+        @media (max-width: 900px) {
+
+            .welcome-content {
+                max-width: 720px;
+            }
+
+            .feature-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            }
+
+            .feature-card:last-child {
+                grid-column: 1 / -1;
+            }
+        }
+
+        /* ===============================
+           MOBILE
+        =============================== */
+
         @media (max-width: 640px) {
+
             body {
-                padding: 0;
+                overflow-x: hidden;
             }
 
             .sidebar {
@@ -151,24 +312,242 @@
             }
 
             .main-content {
-                padding: 20px 16px;
+                width: 100%;
+                min-width: 0;
+            }
+
+            #welcome-section {
+                min-height: 100svh;
+                min-height: 100vh;
+                justify-content: flex-start;
+                overflow-y: auto;
+            }
+
+            .welcome-content {
+                width: 100%;
+                max-width: 100%;
+                padding:
+                    42px
+                    16px
+                    28px;
             }
 
             .ai-orb {
-                width: 75px;
-                height: 75px;
+                width: 78px;
+                height: 78px;
+                margin-bottom: 20px;
+            }
+
+            .ai-orb::before {
+                width: 43px;
+                height: 17px;
+                top: 12px;
+                left: 12px;
+            }
+
+            .ai-orb::after {
+                width: 24px;
+                height: 24px;
+                bottom: 12px;
+                right: 12px;
             }
 
             .welcome-title {
-                font-size: 1.7rem !important;
+                font-size: 1.65rem !important;
+                line-height: 1.2;
+                word-break: normal;
+            }
+
+            .welcome-description {
+                max-width: 330px;
+                font-size: 0.82rem;
+                line-height: 1.5;
+            }
+
+            .welcome-greeting {
+                font-size: 0.95rem;
+            }
+
+            .chat-form-wrapper {
+                width: 100%;
+            }
+
+            .main-input {
+                border-radius: 16px;
+                padding: 10px;
+            }
+
+            .main-input textarea {
+                min-height: 48px;
+                font-size: 0.85rem;
+            }
+
+            .input-tools {
+                gap: 4px;
+                flex-wrap: wrap;
+            }
+
+            .input-tool-button {
+                padding-left: 9px !important;
+                padding-right: 9px !important;
+            }
+
+            .send-button {
+                width: 36px;
+                height: 36px;
+                flex-shrink: 0;
             }
 
             .feature-grid {
                 grid-template-columns: 1fr !important;
+                gap: 8px;
+                margin-top: 14px;
+            }
+
+            .feature-card,
+            .feature-card:last-child {
+                grid-column: auto;
+                padding: 13px;
+            }
+
+            .feature-card .text-lg {
+                margin-bottom: 6px;
+            }
+
+            .feature-card p {
+                font-size: 0.7rem;
+                line-height: 1.4;
+            }
+
+            .warning-text {
+                text-align: center;
+                line-height: 1.4;
+                max-width: 300px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            /* Chat mobile */
+
+            #chat-section {
+                min-height: 100svh;
+                min-height: 100vh;
+                padding:
+                    16px
+                    12px
+                    16px;
+            }
+
+            .chat-header {
+                margin-bottom: 8px;
+            }
+
+            .chat-header-icon {
+                width: 36px;
+                height: 36px;
+                flex-shrink: 0;
+            }
+
+            #chat-box {
+                padding-left: 0;
+                padding-right: 0;
+                padding-top: 8px;
+                padding-bottom: 8px;
+            }
+
+            #chat-box > div {
+                gap: 8px;
+            }
+
+            #chat-box > div > div:first-child {
+                width: 30px;
+                height: 30px;
+                flex-basis: 30px;
+                font-size: 0.65rem;
+            }
+
+            #chat-box > div > div:last-child {
+                max-width: calc(100% - 38px);
+                padding: 11px;
+                font-size: 0.82rem;
+                line-height: 1.55;
+            }
+
+            .bottom-chat-input {
+                margin-top: 8px;
+            }
+        }
+
+        /* ===============================
+           SMALL MOBILE
+        =============================== */
+
+        @media (max-width: 400px) {
+
+            .welcome-content {
+                padding-left: 12px;
+                padding-right: 12px;
+                padding-top: 32px;
+            }
+
+            .welcome-title {
+                font-size: 1.5rem !important;
+            }
+
+            .welcome-description {
+                font-size: 0.78rem;
+            }
+
+            .input-tools button {
+                font-size: 0.68rem;
             }
 
             .feature-card {
-                padding: 12px;
+                padding: 11px;
+            }
+
+            #chat-section {
+                padding-left: 9px;
+                padding-right: 9px;
+            }
+
+            #chat-box > div > div:last-child {
+                max-width: calc(100% - 34px);
+                font-size: 0.78rem;
+            }
+        }
+
+        /* ===============================
+           LANDSCAPE MOBILE
+        =============================== */
+
+        @media (max-width: 900px) and (orientation: landscape) {
+
+            #welcome-section {
+                min-height: auto;
+            }
+
+            .welcome-content {
+                padding-top: 24px;
+                padding-bottom: 24px;
+            }
+
+            .ai-orb {
+                width: 65px;
+                height: 65px;
+                margin-bottom: 14px;
+            }
+
+            .welcome-title {
+                font-size: 1.5rem !important;
+            }
+
+            .welcome-description {
+                margin-top: 8px;
+            }
+
+            .feature-grid {
+                margin-top: 12px;
             }
         }
     </style>
@@ -253,154 +632,170 @@
         <main class="main-content flex-1 min-h-screen flex flex-col">
 
             <!-- ================= WELCOME ================= -->
-            <section id="welcome-section"
-                class="flex-1 flex flex-col items-center justify-center px-5 py-10">
+            <section
+                id="welcome-section"
+                class="flex-1 flex flex-col items-center justify-center px-5 py-10"
+            >
 
-                <!-- AI Orb -->
-                <div class="ai-orb mb-6"></div>
+                <div class="welcome-content w-full max-w-4xl flex flex-col items-center">
 
-                <!-- Greeting -->
-                <div class="text-center mb-7">
+                    <!-- AI Orb -->
+                    <div class="ai-orb mb-6"></div>
 
-                    <p class="text-slate-400 text-lg mb-1">
-                        Hi, I'm your
-                    </p>
+                    <!-- Greeting -->
+                    <div class="text-center mb-7">
 
-                    <h1 class="welcome-title text-3xl md:text-4xl font-bold text-slate-100">
-                        AI Study Assistant
-                    </h1>
+                        <p class="welcome-greeting text-slate-400 text-lg mb-1">
+                            Hi, I'm your
+                        </p>
 
-                    <p class="text-slate-400 text-sm mt-3 max-w-md mx-auto">
-                        Tanyakan apa saja tentang pelajaranmu.
-                        Aku siap membantu kamu belajar.
-                    </p>
+                        <h1 class="welcome-title text-3xl md:text-4xl font-bold text-slate-100">
+                            AI Study Assistant
+                        </h1>
 
-                </div>
+                        <p class="welcome-description text-slate-400 text-sm mt-3 max-w-md mx-auto">
+                            Tanyakan apa saja tentang pelajaranmu.
+                            Aku siap membantu kamu belajar.
+                        </p>
 
-
-                <!-- ================= INPUT ================= -->
-                <form id="chat-form" class="w-full max-w-2xl">
-
-                    <div class="main-input rounded-2xl p-3">
-
-                        <textarea
-                            id="user-input"
-                            rows="2"
-                            placeholder="Tanyakan apa saja..."
-                            class="w-full bg-transparent border-none outline-none resize-none text-sm text-slate-100 placeholder-slate-500 px-2 py-1"
-                            required
-                        ></textarea>
+                    </div>
 
 
-                        <div class="flex items-center justify-between mt-2 px-1">
+                    <!-- ================= INPUT ================= -->
+                    <form
+                        id="chat-form"
+                        class="chat-form-wrapper w-full max-w-2xl"
+                    >
 
-                            <!-- Left tools -->
-                            <div class="flex items-center gap-2">
+                        <div class="main-input rounded-2xl p-3">
 
+                            <textarea
+                                id="user-input"
+                                rows="2"
+                                placeholder="Tanyakan apa saja..."
+                                class="w-full bg-transparent border-none outline-none resize-none text-sm text-slate-100 placeholder-slate-500 px-2 py-1"
+                                required
+                            ></textarea>
+
+
+                            <div class="flex items-center justify-between gap-2 mt-2 px-1">
+
+                                <!-- Left tools -->
+                                <div class="input-tools flex items-center gap-2 min-w-0">
+
+                                    <button
+                                        type="button"
+                                        class="input-tool-button flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition"
+                                    >
+                                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/>
+                                        </svg>
+                                        File
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        class="input-tool-button flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition"
+                                    >
+                                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-width="2" stroke-linecap="round" d="M12 3v18M3 12h18"/>
+                                        </svg>
+                                        Tools
+                                    </button>
+
+                                </div>
+
+
+                                <!-- Send -->
                                 <button
-                                    type="button"
-                                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition"
+                                    type="submit"
+                                    id="send-btn"
+                                    class="send-button w-9 h-9 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 flex items-center justify-center transition active:scale-95 disabled:opacity-50"
                                 >
-                                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                            d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/>
+                                    <svg
+                                        width="16"
+                                        height="16"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M5 12h14M13 6l6 6-6 6"
+                                        />
                                     </svg>
-                                    File
-                                </button>
-
-                                <button
-                                    type="button"
-                                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition"
-                                >
-                                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-width="2" stroke-linecap="round" d="M12 3v18M3 12h18"/>
-                                    </svg>
-                                    Tools
                                 </button>
 
                             </div>
-
-
-                            <!-- Send -->
-                            <button
-                                type="submit"
-                                id="send-btn"
-                                class="w-9 h-9 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 flex items-center justify-center transition active:scale-95 disabled:opacity-50"
-                            >
-                                <svg
-                                    width="16"
-                                    height="16"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        d="M5 12h14M13 6l6 6-6 6"
-                                    />
-                                </svg>
-                            </button>
-
                         </div>
+
+                    </form>
+
+
+                    <!-- ================= FEATURE CARDS ================= -->
+                    <div class="feature-grid grid grid-cols-3 gap-3 w-full max-w-2xl mt-5">
+
+                        <button
+                            type="button"
+                            class="feature-card"
+                            onclick="setPrompt('Jelaskan konsep programming ini dengan sederhana')"
+                        >
+                            <div class="text-lg mb-2">💡</div>
+
+                            <h3 class="text-sm font-medium text-slate-200">
+                                Tanya Konsep
+                            </h3>
+
+                            <p class="text-[11px] text-slate-500 mt-1">
+                                Pelajari konsep programming dengan mudah.
+                            </p>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="feature-card"
+                            onclick="setPrompt('Buatkan saya kuis untuk menguji pemahaman saya')"
+                        >
+                            <div class="text-lg mb-2">📝</div>
+
+                            <h3 class="text-sm font-medium text-slate-200">
+                                Buat Kuis
+                            </h3>
+
+                            <p class="text-[11px] text-slate-500 mt-1">
+                                Uji pemahamanmu dengan kuis.
+                            </p>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="feature-card"
+                            onclick="setPrompt('Tolong ringkas materi berikut ini')"
+                        >
+                            <div class="text-lg mb-2">📚</div>
+
+                            <h3 class="text-sm font-medium text-slate-200">
+                                Ringkas Materi
+                            </h3>
+
+                            <p class="text-[11px] text-slate-500 mt-1">
+                                Ringkas materi menjadi lebih mudah dipahami.
+                            </p>
+                        </button>
+
                     </div>
 
-                </form>
 
-
-                <!-- ================= FEATURE CARDS ================= -->
-                <div class="feature-grid grid grid-cols-3 gap-3 w-full max-w-2xl mt-5">
-
-                    <button
-                        type="button"
-                        class="feature-card"
-                        onclick="setPrompt('Jelaskan konsep programming ini dengan sederhana')"
-                    >
-                        <div class="text-lg mb-2">💡</div>
-                        <h3 class="text-sm font-medium text-slate-200">
-                            Tanya Konsep
-                        </h3>
-                        <p class="text-[11px] text-slate-500 mt-1">
-                            Pelajari konsep programming dengan mudah.
-                        </p>
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="feature-card"
-                        onclick="setPrompt('Buatkan saya kuis untuk menguji pemahaman saya')"
-                    >
-                        <div class="text-lg mb-2">📝</div>
-                        <h3 class="text-sm font-medium text-slate-200">
-                            Buat Kuis
-                        </h3>
-                        <p class="text-[11px] text-slate-500 mt-1">
-                            Uji pemahamanmu dengan kuis.
-                        </p>
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="feature-card"
-                        onclick="setPrompt('Tolong ringkas materi berikut ini')"
-                    >
-                        <div class="text-lg mb-2">📚</div>
-                        <h3 class="text-sm font-medium text-slate-200">
-                            Ringkas Materi
-                        </h3>
-                        <p class="text-[11px] text-slate-500 mt-1">
-                            Ringkas materi menjadi lebih mudah dipahami.
-                        </p>
-                    </button>
+                    <p class="warning-text text-[10px] text-slate-600 mt-5">
+                        AI dapat membuat kesalahan. Selalu periksa kembali informasi penting.
+                    </p>
 
                 </div>
-
-                <p class="text-[10px] text-slate-600 mt-5">
-                    AI dapat membuat kesalahan. Selalu periksa kembali informasi penting.
-                </p>
 
             </section>
 
@@ -412,13 +807,13 @@
             >
 
                 <!-- Chat Header -->
-                <div class="flex items-center gap-3 mb-4">
+                <div class="chat-header flex items-center gap-3 mb-4">
 
-                    <div class="w-9 h-9 rounded-xl bg-purple-600 flex items-center justify-center text-xs font-bold">
+                    <div class="chat-header-icon w-9 h-9 rounded-xl bg-purple-600 flex items-center justify-center text-xs font-bold">
                         AI
                     </div>
 
-                    <div>
+                    <div class="min-w-0">
                         <h2 class="text-sm font-semibold">
                             AI Study Assistant
                         </h2>
@@ -454,7 +849,10 @@
 
 
                 <!-- Chat Input -->
-                <form id="chat-form-bottom" class="mt-3">
+                <form
+                    id="chat-form-bottom"
+                    class="bottom-chat-input mt-3"
+                >
 
                     <div class="main-input rounded-2xl p-3">
 
@@ -470,7 +868,7 @@
                             <button
                                 type="button"
                                 id="send-btn-bottom"
-                                class="w-9 h-9 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 flex items-center justify-center"
+                                class="send-button w-9 h-9 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 flex items-center justify-center disabled:opacity-50"
                             >
                                 <svg
                                     width="16"
@@ -637,7 +1035,6 @@
 
 
             bottomInput.value = '';
-
             userInput.value = '';
 
 
