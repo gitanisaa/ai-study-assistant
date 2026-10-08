@@ -6,7 +6,6 @@ from groq import Groq
 app = Flask(__name__)
 CORS(app)
 
-# Inisialisasi Groq Client
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 @app.route('/')
@@ -17,23 +16,24 @@ def home():
 def chat():
     try:
         data = request.get_json()
-        user_message = data.get('message', '')
+        # Mengambil riwayat pesan dari frontend
+        incoming_messages = data.get('messages', [])
 
-        if not user_message:
+        if not incoming_messages:
             return jsonify({'error': 'Pesan tidak boleh kosong'}), 400
 
+        # Prompt dasar untuk karakter AI
+        system_instruction = [{
+            "role": "system",
+            "content": "Kamu adalah AI Study Assistant yang ramah dan membantu siswa belajar."
+        }]
+
+        # Gabungkan instruksi awal dengan riwayat chat
+        full_conversation = system_instruction + incoming_messages
+
         chat_completion = client.chat.completions.create(
-            messages=[
-                {
-                    "role": "system",
-                    "content": "Kamu adalah AI Study Assistant yang ramah dan membantu siswa belajar."
-                },
-                {
-                    "role": "user",
-                    "content": user_message
-                }
-            ],
-           model="openai/gpt-oss-20b"
+            messages=full_conversation,
+            model="openai/gpt-oss-20b"
         )
 
         reply = chat_completion.choices[0].message.content
