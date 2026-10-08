@@ -3,8 +3,6 @@ const userInput = document.getElementById('userInput');
 const placeholder = document.getElementById('placeholder');
 const answerContent = document.getElementById('answerContent');
 
-const API_URL = fetch("/chat", { ... })
-
 sendBtn.addEventListener('click', sendMessage);
 userInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -15,46 +13,34 @@ userInput.addEventListener('keypress', (e) => {
 
 async function sendMessage() {
     const message = userInput.value.trim();
-    if (!message) {
-        userInput.style.borderColor = '#f87171';
-        setTimeout(() => {
-            userInput.style.borderColor = '#2a2a35';
-        }, 1500);
-        return;
-    }
+    if (!message) return;
 
-    // Reset border
-    userInput.style.borderColor = '#2a2a35';
-    
-    // Tampilkan loading
+    // Tampilkan status loading
     if (placeholder) placeholder.style.display = 'none';
-    if (answerContent) {
-        answerContent.style.display = 'block';
-        answerContent.innerHTML = '<div class="loading">🤔 AI sedang berpikir... <span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span></div>';
-    }
+    answerContent.innerHTML = '<p class="text-slate-400">Sedang berpikir...</p>';
+    sendBtn.disabled = true;
 
     try {
-        const response = await fetch(API_URL, {
+        const response = await fetch("/chat", {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ message: message }),
+            body: JSON.stringify({ message: message })
         });
 
         const data = await response.json();
-        
-        if (answerContent) {
-            answerContent.innerHTML = `<div style="background: #1e1e2a; padding: 1rem; border-radius: 0.75rem; line-height: 1.6;">💬 ${data.reply}</div>`;
-        }
-        
-        // Kosongkan input setelah kirim (opsional)
-        // userInput.value = '';
 
-    } catch (error) {
-        console.error('Error:', error);
-        if (answerContent) {
-            answerContent.innerHTML = '<div style="color: #f87171; background: #1e1e2a; padding: 1rem; border-radius: 0.75rem;">⚠️ Gagal konek ke server. Pastikan Flask jalan di terminal (python app.py)</div>';
+        if (response.ok) {
+            answerContent.innerHTML = marked.parse(data.response);
+        } else {
+            answerContent.innerHTML = `<p class="text-red-400">Error: ${data.error || 'Gagal mendapatkan respon'}</p>`;
         }
+    } catch (error) {
+        console.error("Error:", error);
+        answerContent.innerHTML = '<p class="text-red-400">Gagal terhubung ke server Flask. Pastikan koneksi aman.</p>';
+    } finally {
+        sendBtn.disabled = false;
+        userInput.value = '';
     }
 }
