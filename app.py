@@ -33,7 +33,7 @@ def chat():
                     "content": user_message
                 }
             ],
-            model="llama-3.1-8b-instant"
+           model="openai/gpt-oss-20b"
         )
 
         reply = chat_completion.choices[0].message.content
